@@ -13,7 +13,7 @@ export default function SpendingForm() {
   // 4. Create a handler function for the amount input
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Only update the state if the value is not negative
+    // Only update the state if t he value is not negative
     if (!value.startsWith('-')) {
       setAmount(value);
     }
