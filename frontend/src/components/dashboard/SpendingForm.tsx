@@ -6,9 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from '@/lib/firebase/AuthContext';
-import { addSpending, Spending } from '@/lib/firebase/firestore'; // 1. Import the 'Spending' type
+import { addSpending, Spending } from '@/lib/firebase/firestore';
 
-export default function SpendingForm() {
+// Define the type for the props the component will receive
+interface SpendingFormProps {
+  onSpendingAdded: () => void;
+}
+
+export default function SpendingForm({ onSpendingAdded }: SpendingFormProps) {
   const { user } = useAuth();
 
   const [amount, setAmount] = useState('');
@@ -24,7 +29,6 @@ export default function SpendingForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!user) {
       console.error("No user logged in");
       return;
@@ -43,15 +47,15 @@ export default function SpendingForm() {
       description,
     };
 
-    console.log("Sending this data to Firestore:", spendingData);
-
-    // 2. Fix the function call
     await addSpending(spendingData as Omit<Spending, 'id' | 'timestamp'>);
 
     // Reset form fields
     setAmount('');
     setCategory('');
     setDescription('');
+
+    // Call the parent function to trigger a UI refresh
+    onSpendingAdded();
   };
 
   return (

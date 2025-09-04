@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -12,45 +11,35 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { useAuth } from "@/lib/firebase/AuthContext";
-import { getSpendings, deleteSpending, Spending } from "@/lib/firebase/firestore";
+import { deleteSpending, Spending } from "@/lib/firebase/firestore";
 
-export default function SpendingList() {
-  const { user } = useAuth();
-  const [spendings, setSpendings] = useState<Spending[]>([]);
-  const [loading, setLoading] = useState(true); // Manages loading state
+// Define the types for the props the component will receive
+interface SpendingListProps {
+  spendings: Spending[];
+  loading: boolean;
+  setSpendings: React.Dispatch<React.SetStateAction<Spending[]>>;
+}
 
-  useEffect(() => {
-    if (user) {
-      const fetchSpendings = async () => {
-        const userSpendings = await getSpendings(user.uid);
-        setSpendings(userSpendings);
-        setLoading(false); // Set loading to false after data is fetched
-      };
-      fetchSpendings();
-    } else {
-      setLoading(false); // Also stop loading if there's no user
-    }
-  }, [user]);
-
+export default function SpendingList({ spendings, loading, setSpendings }: SpendingListProps) {
+  
   const handleDelete = async (spendingId: string) => {
     await deleteSpending(spendingId);
-    setSpendings(spendings.filter((item) => item.id !== spendingId));
+    // Update the state in the parent component by filtering the local list
+    setSpendings((prevSpendings) =>
+      prevSpendings.filter((item) => item.id !== spendingId)
+    );
   };
-
+  
   const totalAmount = spendings.reduce((sum, item) => sum + item.amount, 0);
 
-  // First, render a loading message to ensure server and client match
   if (loading) {
     return <p className="text-center text-gray-500 py-4">Loading spendings...</p>;
   }
 
-  // Then, render the empty message if applicable
   if (spendings.length === 0) {
     return <p className="text-center text-gray-500 py-4">No spendings recorded yet.</p>;
   }
 
-  // Finally, render the table with data
   return (
     <Table>
       <TableHeader>
