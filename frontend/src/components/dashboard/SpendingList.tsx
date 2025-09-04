@@ -1,31 +1,40 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
-// Mock data that we will replace with Firestore data later
+// Mock data
 const mockSpendings = [
-  { id: 1, description: "Pizza Order", category: "Food", amount: 1200, date: "2025-09-01" },
-  { id: 2, description: "Cab to office", category: "Transport", amount: 500, date: "2025-09-01" },
-  { id: 3, description: "New T-shirt", category: "Shopping", amount: 2500, date: "2025-08-31" },
+  { id: 1, description: "Pizza Order", category: "Food", amount: 1200 },
+  { id: 2, description: "Cab to office", category: "Transport", amount: 500 },
+  { id: 3, description: "New T-shirt", category: "Shopping", amount: 2500 },
 ];
 
 export default function SpendingList() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Recent Spendings</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ul className="space-y-4">
-          {mockSpendings.map((item) => (
-            <li key={item.id} className="flex items-center justify-between p-2 rounded-md hover:bg-gray-50">
-              <div>
-                <p className="font-medium">{item.description}</p>
-                <p className="text-sm text-gray-500">{item.category}</p>
-              </div>
-              <p className="font-semibold">₹{item.amount.toLocaleString('en-IN')}</p>
-            </li>
-          ))}
-        </ul>
-      </CardContent>
-    </Card>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Description</TableHead>
+          <TableHead>Category</TableHead>
+          <TableHead className="text-right">Amount</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {mockSpendings.map((item) => (
+          <TableRow key={item.id}>
+            <TableCell className="font-medium">{item.description}</TableCell>
+            <TableCell>{item.category}</TableCell>
+            <TableCell className="text-right">
+              ₹{item.amount.toLocaleString('en-IN')}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
