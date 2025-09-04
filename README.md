@@ -35,10 +35,12 @@ git clone https://github.com/Praveen-3125/SpendWise.git
 Navigate to the project directory
 
 Bash
+
 cd SpendWise/frontend
 Install pnpm packages
 
 Bash
+
 pnpm install
 Set up your environment variables
 
@@ -49,4 +51,5 @@ Add the necessary environment variables (see the template below).
 Run the development server
 
 Bash
+
 pnpm dev
