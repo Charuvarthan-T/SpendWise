@@ -1,22 +1,57 @@
-'use client'; // 1. Convert to a client component
+'use client';
 
-import { useState } from 'react'; // 2. Import useState
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from '@/lib/firebase/AuthContext';
+import { addSpending, Spending } from '@/lib/firebase/firestore'; // 1. Import the 'Spending' type
 
 export default function SpendingForm() {
-  // 3. Create state to hold the amount value
-  const [amount, setAmount] = useState('');
+  const { user } = useAuth();
 
-  // 4. Create a handler function for the amount input
+  const [amount, setAmount] = useState('');
+  const [category, setCategory] = useState('');
+  const [description, setDescription] = useState('');
+
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Only update the state if t he value is not negative
     if (!value.startsWith('-')) {
       setAmount(value);
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!user) {
+      console.error("No user logged in");
+      return;
+    }
+
+    const amountNumber = parseFloat(amount);
+    if (isNaN(amountNumber) || amountNumber <= 0 || !category) {
+      alert("Please enter a valid amount and category.");
+      return;
+    }
+
+    const spendingData = {
+      userId: user.uid,
+      amount: amountNumber,
+      category,
+      description,
+    };
+
+    console.log("Sending this data to Firestore:", spendingData);
+
+    // 2. Fix the function call
+    await addSpending(spendingData as Omit<Spending, 'id' | 'timestamp'>);
+
+    // Reset form fields
+    setAmount('');
+    setCategory('');
+    setDescription('');
   };
 
   return (
@@ -25,27 +60,38 @@ export default function SpendingForm() {
         <CardTitle>Add New Spending</CardTitle>
       </CardHeader>
       <CardContent>
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="amount">Amount</Label>
-            {/* 5. Connect the input to our state and handler */}
             <Input
               id="amount"
               placeholder="e.g., 1200"
               type="number"
               value={amount}
               onChange={handleAmountChange}
+              required
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="category">Category</Label>
-            <Input id="category" placeholder="e.g., Lunch with friends, Fuel" />
+            <Input
+              id="category"
+              placeholder="e.g., Lunch with friends, Fuel"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              required
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">Description (Optional)</Label>
-            <Input id="description" placeholder="e.g., Pizza order" />
+            <Input
+              id="description"
+              placeholder="e.g., Pizza order"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
           </div>
-          <Button className="w-full">Add Spending</Button>
+          <Button type="submit" className="w-full">Add Spending</Button>
         </form>
       </CardContent>
     </Card>
