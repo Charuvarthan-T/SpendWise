@@ -1,5 +1,5 @@
-import { collection, addDoc, getDocs, query, where, Timestamp, orderBy } from "firebase/firestore";
-import { db } from "./config"; // Your initialized Firestore instance
+import { collection, addDoc, getDocs, query, where, Timestamp, orderBy, deleteDoc, doc } from "firebase/firestore";
+import { db } from "./config";
 
 const SPENDINGS_COLLECTION = "spendings";
 
@@ -42,5 +42,16 @@ export const getSpendings = async (userId: string): Promise<Spending[]> => {
   } catch (error) {
     console.error("Error getting documents: ", error);
     return [];
+  }
+};
+
+// delete functionality
+// Add this new function to the end of the file
+export const deleteSpending = async (spendingId: string) => {
+  try {
+    const docRef = doc(db, SPENDINGS_COLLECTION, spendingId);
+    await deleteDoc(docRef);
+  } catch (error) {
+    console.error("Error deleting document: ", error);
   }
 };
