@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from '@/lib/firebase/AuthContext';
 import { addSpending, Spending } from '@/lib/firebase/firestore';
 
-// Define the type for the props the component will receive
 interface SpendingFormProps {
   onSpendingAdded: () => void;
 }
@@ -49,12 +48,10 @@ export default function SpendingForm({ onSpendingAdded }: SpendingFormProps) {
 
     await addSpending(spendingData as Omit<Spending, 'id' | 'timestamp'>);
 
-    // Reset form fields
     setAmount('');
     setCategory('');
     setDescription('');
 
-    // Call the parent function to trigger a UI refresh
     onSpendingAdded();
   };
 

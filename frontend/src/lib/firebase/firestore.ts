@@ -1,9 +1,8 @@
 import { collection, addDoc, getDocs, query, where, Timestamp, orderBy, deleteDoc, doc } from "firebase/firestore";
-import { db } from "./config";
+import { db } from "./config"; // Your initialized CLIENT-side Firestore instance
 
 const SPENDINGS_COLLECTION = "spendings";
 
-// Interface for type safety
 export interface Spending {
   id?: string;
   userId: string;
@@ -18,20 +17,20 @@ export const addSpending = async (spendingData: Omit<Spending, 'id' | 'timestamp
   try {
     await addDoc(collection(db, SPENDINGS_COLLECTION), {
       ...spendingData,
-      timestamp: Timestamp.now(), // Add server timestamp
+      timestamp: Timestamp.now(),
     });
   } catch (error) {
     console.error("Error adding document: ", error);
   }
 };
 
-// Function to get all spendings for a specific user
+// Function to get all spendings for a specific user (CLIENT-SIDE VERSION)
 export const getSpendings = async (userId: string): Promise<Spending[]> => {
   try {
     const spendingsQuery = query(
       collection(db, SPENDINGS_COLLECTION),
       where("userId", "==", userId),
-      orderBy("timestamp", "desc") // Show most recent first
+      orderBy("timestamp", "desc")
     );
 
     const querySnapshot = await getDocs(spendingsQuery);
@@ -41,12 +40,12 @@ export const getSpendings = async (userId: string): Promise<Spending[]> => {
     }));
   } catch (error) {
     console.error("Error getting documents: ", error);
-    return [];
+    // On the client, we throw the error to be handled by the component
+    throw error;
   }
 };
 
-// delete functionality
-// Add this new function to the end of the file
+// Function to delete a spending document
 export const deleteSpending = async (spendingId: string) => {
   try {
     const docRef = doc(db, SPENDINGS_COLLECTION, spendingId);

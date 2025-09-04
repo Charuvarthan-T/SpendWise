@@ -8,13 +8,13 @@ import SignOutButton from "@/components/auth/SignOutButton";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
 import { getSpendings, Spending } from '@/lib/firebase/firestore';
+import AISuggestions from '@/components/dashboard/AISuggestions'; // Make sure this is imported
 
 export default function DashboardPage() {
   const { user } = useAuth();
   const [spendings, setSpendings] = useState<Spending[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // This function fetches the data and can be called to refresh the list
   const fetchSpendings = async () => {
     if (user) {
       const userSpendings = await getSpendings(user.uid);
@@ -23,14 +23,12 @@ export default function DashboardPage() {
     setLoading(false);
   };
 
-  // Fetch the initial data when the component loads
   useEffect(() => {
     fetchSpendings();
   }, [user]);
 
-  // This function is passed down to the form, which calls it after a new spending is added
   const handleSpendingAdded = () => {
-    fetchSpendings(); // Re-fetches the data, automatically updating the list
+    fetchSpendings();
   };
 
   return (
@@ -44,8 +42,12 @@ export default function DashboardPage() {
         </header>
 
         <main className="mt-4">
-          <SpendingForm onSpendingAdded={handleSpendingAdded} />
-
+          <div className="flex flex-col gap-6">
+            <SpendingForm onSpendingAdded={handleSpendingAdded} />
+            {/* Pass the spendings prop to the AISuggestions component */}
+            <AISuggestions spendings={spendings} />
+          </div>
+          
           <Accordion type="single" collapsible className="w-full mt-6">
             <AccordionItem value="item-1">
               <AccordionTrigger>View Recent Spendings</AccordionTrigger>

@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { deleteSpending, Spending } from "@/lib/firebase/firestore";
 
-// Define the types for the props the component will receive
 interface SpendingListProps {
   spendings: Spending[];
   loading: boolean;
@@ -24,7 +23,6 @@ export default function SpendingList({ spendings, loading, setSpendings }: Spend
   
   const handleDelete = async (spendingId: string) => {
     await deleteSpending(spendingId);
-    // Update the state in the parent component by filtering the local list
     setSpendings((prevSpendings) =>
       prevSpendings.filter((item) => item.id !== spendingId)
     );
