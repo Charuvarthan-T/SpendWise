@@ -9,13 +9,13 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"; // Import the accordion components
+} from "@/components/ui/accordion";
+import { Card, CardContent } from "@/components/ui/card"; // Import Card components
 
 export default function DashboardPage() {
   const { user } = useAuth();
 
   return (
-    // Main container to center the content
     <div className="flex w-full flex-col items-center p-4">
       <div className="w-full max-w-2xl">
         {/* Header Section */}
@@ -30,12 +30,16 @@ export default function DashboardPage() {
         <main className="mt-4">
           <SpendingForm />
 
-          {/* Accordion for Recent Spendings */}
           <Accordion type="single" collapsible className="w-full mt-6">
             <AccordionItem value="item-1">
               <AccordionTrigger>View Recent Spendings</AccordionTrigger>
               <AccordionContent>
-                <SpendingList />
+                {/* Wrap the list in a Card for valid structure and styling */}
+                <Card>
+                  <CardContent className="pt-4">
+                    <SpendingList />
+                  </CardContent>
+                </Card>
               </AccordionContent>
             </AccordionItem>
           </Accordion>
