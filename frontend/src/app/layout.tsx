@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/lib/firebase/AuthContext"; // 1. Import the provider
+import { AuthProvider } from "@/lib/firebase/AuthContext";
+import { ThemeProvider } from "@/components/theme-provider"; 
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,9 +17,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>): React.JSX.Element {
   return (
-    <html lang="en">
+    // 2. Add suppressHydrationWarning to the html tag
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <AuthProvider>{children}</AuthProvider> {/* 2. Wrap the children */}
+        {/* 3. Wrap everything in the ThemeProvider */}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>{children}</AuthProvider> {/* AuthProvider is now nested inside */}
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -17,16 +17,17 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 
-// Define the structure of a single spending entry
+
 interface DailySpend {
   date: string; // e.g., "Sep 05"
   amount: number;
 }
 
-// Define the props for our component
+
 interface DailySpendChartProps {
   data: DailySpend[];
 }
+
 
 const chartConfig = {
   amount: {

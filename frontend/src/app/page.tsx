@@ -6,6 +6,7 @@ import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
 import { useAuth } from '@/lib/firebase/AuthContext';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/dashboard/ThemeToggle';
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -41,12 +42,15 @@ export default function Home() {
 
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 dark:bg-black">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <div className="text-center">
-        <h1 className="text-5xl font-bold tracking-tight text-gray-900">
+        <h1 className="text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
           SpendWise
         </h1>
-        <p className="mt-3 text-lg text-gray-600">
+        <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">
           Your personal finance dashboard, powered by AI.
         </p>
         <Button onClick={handleSignIn} className="mt-8">

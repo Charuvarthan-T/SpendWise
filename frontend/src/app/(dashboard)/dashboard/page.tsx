@@ -11,6 +11,7 @@ import { getSpendings, Spending } from '@/lib/firebase/firestore';
 import AISuggestions from '@/components/dashboard/AISuggestions';
 import { DailySpendChart } from '@/components/custom/DailySpendChart'; 
 import { Timestamp } from 'firebase/firestore'; 
+import { ThemeToggle } from '@/components/dashboard/ThemeToggle'; // 1. Import the ThemeToggle
 
 // chart components
 interface DailySpend {
@@ -48,23 +49,10 @@ export default function DashboardPage() {
       const spendingByDay: { [key: string]: number } = {};
 
       spendings.forEach(spending => {
-        let dateObj: Date;
-        
-        if (spending.timestamp instanceof Timestamp) {
-          dateObj = spending.timestamp.toDate();
-        }
-        
-        else if (typeof spending.timestamp === 'string' || typeof spending.timestamp === 'number') {
-          dateObj = new Date(spending.timestamp);
-        }
-        
-        else if (spending.timestamp && Object.prototype.toString.call(spending.timestamp) === '[object Date]') {
-          dateObj = spending.timestamp as Date;
-        }
-        
-        else {
-          dateObj = new Date(); 
-        }
+        // This logic handles various date formats from Firestore
+        const dateObj = spending.timestamp instanceof Timestamp 
+            ? spending.timestamp.toDate() 
+            : new Date(spending.timestamp);
 
         const dateKey = dateObj.toLocaleDateString('en-US', {
           month: 'short',
@@ -74,11 +62,9 @@ export default function DashboardPage() {
         if(spendingByDay[dateKey]){
           spendingByDay[dateKey]+=spending.amount;
         }
-        
         else{
           spendingByDay[dateKey]=spending.amount;
         }
-
       });
 
       const formattedData=Object.keys(spendingByDay).map(date => ({
@@ -90,11 +76,9 @@ export default function DashboardPage() {
 
       setDailyData(formattedData);
     }
-    
     else{
       setDailyData([]); 
     }
-
   }, [spendings]); 
 
   const handleSpendingAdded = () => {
@@ -108,7 +92,11 @@ export default function DashboardPage() {
           <h1 className="text-2xl font-bold">
             Welcome, {user ? user.displayName?.split(' ')[0] : 'User'}!
           </h1>
-          <SignOutButton />
+          {/* 2. Add the ThemeToggle next to the SignOutButton */}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <SignOutButton />
+          </div>
         </header>
 
         <main className="mt-4 space-y-6">

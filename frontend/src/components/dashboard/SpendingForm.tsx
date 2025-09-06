@@ -8,9 +8,13 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from '@/lib/firebase/AuthContext';
 import { addSpending, Spending } from '@/lib/firebase/firestore';
 
+
+
 interface SpendingFormProps {
   onSpendingAdded: () => void;
 }
+
+
 
 export default function SpendingForm({ onSpendingAdded }: SpendingFormProps) {
   const { user } = useAuth();
@@ -26,12 +30,16 @@ export default function SpendingForm({ onSpendingAdded }: SpendingFormProps) {
   };
 
 
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
       console.error("No user logged in");
       return;
     }
+
+
 
 
     const amountNumber = parseFloat(amount);
@@ -41,6 +49,9 @@ export default function SpendingForm({ onSpendingAdded }: SpendingFormProps) {
     }
 
 
+    
+    
+    
     const spendingData = {
       userId: user.uid,
       amount: amountNumber,
@@ -51,6 +62,7 @@ export default function SpendingForm({ onSpendingAdded }: SpendingFormProps) {
 
     await addSpending(spendingData as Omit<Spending, 'id' | 'timestamp'>);
 
+    
     setAmount('');
     setCategory('');
     setDescription('');
@@ -110,6 +122,8 @@ export default function SpendingForm({ onSpendingAdded }: SpendingFormProps) {
     </Card>
   );
 }
+
+
 
 function alert(arg0: string) {
   throw new Error('Function not implemented.');
