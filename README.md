@@ -32,6 +32,7 @@ Clone the repo
 
 # Bash
 git clone https://github.com/Praveen-3125/SpendWise.git
+
 cd SpendWise/frontend
 
 pnpm install
