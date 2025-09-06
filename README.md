@@ -30,26 +30,14 @@ A Google Gemini API key.
 # Installation
 Clone the repo
 
-Bash
+# Bash
 git clone https://github.com/Praveen-3125/SpendWise.git
-Navigate to the project directory
-
-Bash
-
 cd SpendWise/frontend
-Install pnpm packages
-
-Bash
 
 pnpm install
-Set up your environment variables
 
+Set up your environment variables
 Create a file named .env.local in the frontend directory.
 
-Add the necessary environment variables (see the template below).
-
-Run the development server
-
-Bash
-
+# Run the development server
 pnpm dev
