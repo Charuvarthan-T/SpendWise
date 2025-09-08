@@ -1,67 +1,83 @@
 'use client';
 
+// tells to render on the client side that is the browser
+// react hooks to manage state(memory) and side effects(actions)
 import { useState, useEffect } from 'react';
+
+// server is aware of the user from the user's identity from the request
 import { useAuth } from "@/lib/firebase/AuthContext";
+
+
+// following are components we created
 import SpendingForm from "@/components/dashboard/SpendingForm";
 import SpendingList from "@/components/dashboard/SpendingList";
 import SignOutButton from "@/components/auth/SignOutButton";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
+
+// firestore functions to get data
 import { getSpendings, Spending } from '@/lib/firebase/firestore';
 import AISuggestions from '@/components/dashboard/AISuggestions';
 import { DailySpendChart } from '@/components/custom/DailySpendChart'; 
 import { Timestamp } from 'firebase/firestore'; 
-import { ThemeToggle } from '@/components/dashboard/ThemeToggle'; // 1. Import the ThemeToggle
+import { ThemeToggle } from '@/components/dashboard/ThemeToggle';
 
-// chart components
+
+// the following interface is for the data format needed for the chart
 interface DailySpend {
   date: string;
   amount: number;
 }
 
+
+// components state are initialized here
 export default function DashboardPage() {
   const { user } = useAuth();
   const [spendings, setSpendings] = useState<Spending[]>([]);
+  // the below state is for the chart data
   const [dailyData, setDailyData] = useState<DailySpend[]>([]); 
+  // for loading state
   const [loading, setLoading] = useState(true);
 
 
-// firestore fetching is done here!
   const fetchSpendings = async () => {
     if (user) {
       setLoading(true);
+      // await -> wait for the getSpendings to complete
       const userSpendings = await getSpendings(user.uid);
       setSpendings(userSpendings);
       setLoading(false);
     }
   };
 
-
+  // useEffect to fetch spendings when user changes (login/logout)
   useEffect(() => {
     if (user) {
       fetchSpendings();
     }
   }, [user]);
-
-
+  
+  
+  // useEffect to process spendings into dailyData for the chart
   useEffect(() => {
-    if (spendings.length > 0) {
-      const spendingByDay: { [key: string]: number } = {};
-
+    if(spendings.length>0){
+      const spendingByDay:{ [key: string]: number } = {};
+      
       spendings.forEach(spending => {
         // This logic handles various date formats from Firestore
-        const dateObj = spending.timestamp instanceof Timestamp 
-            ? spending.timestamp.toDate() 
-            : new Date(spending.timestamp);
 
+        // AI generated code 
+        const dateObj = spending.timestamp instanceof Timestamp ? spending.timestamp.toDate() : new Date(spending.timestamp); 
         const dateKey = dateObj.toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',
         });
+        // end 
 
         if(spendingByDay[dateKey]){
           spendingByDay[dateKey]+=spending.amount;
         }
+
         else{
           spendingByDay[dateKey]=spending.amount;
         }
@@ -76,10 +92,12 @@ export default function DashboardPage() {
 
       setDailyData(formattedData);
     }
+
     else{
       setDailyData([]); 
     }
-  }, [spendings]); 
+    
+  }, [spendings]);
 
   const handleSpendingAdded = () => {
     fetchSpendings();
@@ -92,6 +110,7 @@ export default function DashboardPage() {
           <h1 className="text-2xl font-bold">
             Welcome, {user ? user.displayName?.split(' ')[0] : 'User'}!
           </h1>
+          
           {/* 2. Add the ThemeToggle next to the SignOutButton */}
           <div className="flex items-center gap-2">
             <ThemeToggle />
