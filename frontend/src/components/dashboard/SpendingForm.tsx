@@ -14,7 +14,7 @@ interface SpendingFormProps {
   onSpendingAdded: () => void;
 }
 
-
+ 
 
 export default function SpendingForm({ onSpendingAdded }: SpendingFormProps) {
   const { user } = useAuth();

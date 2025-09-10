@@ -19,7 +19,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getSpendings, Spending } from '@/lib/firebase/firestore';
 import AISuggestions from '@/components/dashboard/AISuggestions';
 import { DailySpendChart } from '@/components/custom/DailySpendChart'; 
-import { Timestamp } from 'firebase/firestore'; 
+import { Timestamp } from 'firebase/firestore';     
 import { ThemeToggle } from '@/components/dashboard/ThemeToggle';
 
 
