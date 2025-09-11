@@ -42,3 +42,7 @@ Create a file named .env.local in the frontend directory.
 
 # Run the development server
 pnpm dev
+
+# To use:
+https://spend-wise-tau-navy.vercel.app/
+The webApp is hosted on vercel and can be accessed through the above link
